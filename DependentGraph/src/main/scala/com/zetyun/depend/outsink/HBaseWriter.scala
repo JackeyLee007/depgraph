@@ -1,10 +1,10 @@
-package com.pccc.depend.outsink
+package com.zetyun.depend.outsink
 
 import java.io.{File, PrintWriter}
 import java.util.{Calendar, UUID}
 
-import com.pccc.depend.LogCall
-import com.pccc.depend.aggregation.Log
+import com.zetyun.depend.LogCall
+import com.zetyun.depend.conf.Configs
 import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
 import org.apache.hadoop.hbase.client.{Connection, ConnectionFactory, Put, Table}
 import org.apache.hadoop.hbase.util.Bytes
@@ -15,7 +15,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class HBaseWriter extends ForeachWriter[LogCall]{
   val logger = LoggerFactory.getLogger("HBaseWriter")
-  val ZOOKEEPER_QUORUM = "localhost:2181"
+  val ZOOKEEPER_QUORUM = Configs.hbaseAddr
 
 
   var conn:Connection =_
@@ -39,7 +39,7 @@ class HBaseWriter extends ForeachWriter[LogCall]{
         val servicename = log.servicename.hashCode()
 
         val time = log.time.toString.substring(0, 10)
-        val rowkey = "%d|%d|%s|%s".format(seqno, servicename, time, log.callertime)
+        val rowkey = "%d|%d|%s|%s".format(seqno, servicename, time, log.caller)
         val put = new Put(rowkey.getBytes)
 
         put.addColumn(Bytes.toBytes("caller"), Bytes.toBytes("code"), Bytes.toBytes(log.caller))

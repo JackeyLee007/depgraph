@@ -1,4 +1,4 @@
-package com.pccc.depend.conf
+package com.zetyun.depend.conf
 
 import java.io.File
 
@@ -17,4 +17,5 @@ object Configs {
   val kafkaBatchSize: Integer = conf.getInt("kafka.batchSize")
   val kafkaConsumerGroup: String = conf.getString("kafka.consumerGroup")
 
+  val hbaseAddr = conf.getString("hbase.zk")
 }
