@@ -20,15 +20,13 @@ object BaseRouter {
       RawHeader("Access-Control-Allow-Headers", "Referer,Accept,Origin,Content-Type,Authorization,User-Agent,If-Modified-Since"))
 
 
-  val router = post {
-    path("depgraph") {
-      entity(as[QueryParam]) {
-
-        param => {
-          respondWithDomainHeader {
-          val ok: Future[DepGraph] = Future(LogCallService.getLogCalls(param.transcode, param.date))
+  val router = path("depgraph") {
+    get {
+      parameters('date, 'transcode) { (date, transcode) =>  {
+        respondWithDomainHeader {
+          val ok: Future[DepGraph] = Future(LogCallService.getLogCalls(transcode, date))
           onComplete(ok) { done =>
-            logger.info("query depgraph by transcode {} and date ", param.transcode)
+            logger.info("query depgraph by transcode {} and date ", transcode)
 
             complete(done)
           }
